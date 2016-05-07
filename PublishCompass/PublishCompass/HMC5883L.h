@@ -29,47 +29,58 @@
 
 void HMC5883L_init()
 {
+	char x = 0x00;
 	// Write 0x70 to HMC5883L register A
-	i2c_start_wait(WRITE_ADDRESS);
-	i2c_write(CONF_A_REG);
+	i2c_start(WRITE_ADDRESS);
+	//i2c_write(WRITE_ADDRESS);
+	//i2c_start_wait(WRITE_ADDRESS);
+	//i2c_write(CONF_A_REG);
+	i2c_write(x);
 	i2c_write(0x70);	// avg 8 samples, 15Hz, Normal measurement
-	i2c_stop();			// release bus
-	
-	// Write 0xE0 to HMC5883L register B
-	i2c_start_wait(WRITE_ADDRESS);
-	i2c_write(CONF_B_REG);
-	i2c_write(0x20);	/* 
-						 */
-	i2c_stop();			// release bus
-	
-	// Write 0x00 to HMC5883L Mode register
-	i2c_start_wait(WRITE_ADDRESS);
-	i2c_write(CONF_M_REG);
-	i2c_write(0x00);	// slow I2C, continuous measurement mode
-	i2c_stop();			// release bus
+	i2c_write(0x20);
+	i2c_write(0x00);
+	i2c_stop();
+	_delay_us(1000); 
+// 	
+// 	i2c_start(WRITE_ADDRESS);
+// 	i2c_write(0x70);	// avg 8 samples, 15Hz, Normal measurement
+// 	i2c_stop();			// release bus
+// 	
+// 	// Write 0xE0 to HMC5883L register B
+// 	i2c_start_wait(WRITE_ADDRESS);
+// 	i2c_write(CONF_B_REG);
+// 	i2c_write(0x20);	/* 
+// 						 */
+// 	i2c_stop();			// release bus
+// 	
+// 	// Write 0x00 to HMC5883L Mode register
+// 	i2c_start_wait(WRITE_ADDRESS);
+// 	i2c_write(CONF_M_REG);
+// 	i2c_write(0x00);	// slow I2C, continuous measurement mode
+// 	i2c_stop();			// release bus
 }
 
 void readCompass(uint16_t *value) 
 {
 	uint16_t temp;
-	i2c_start_wait(WRITE_ADDRESS);
-	i2c_write(X_LSB_REG);
+	//i2c_start_wait(WRITE_ADDRESS);
+	i2c_start(WRITE_ADDRESS);
+	i2c_write(0x03);
 	i2c_start_wait(READ_ADDRESS);
 	// Read x axis
 	temp = i2c_readAck();
-	temp = temp | (i2c_readAck() << 8);		/// <---- fixed it! CHANGE ALL OTHER OPS TO THIS 
+	temp = (temp << 8) | i2c_readAck();
 	value[0] = temp;
-	printf("in func: temp = %d\n", temp);
 	
 	// Read z
 	temp = i2c_readAck();
-	temp = (temp<<8) | i2c_readAck();
-	value[1] = temp;
+	temp = (temp << 8) | i2c_readAck();
+	value[2] = temp;
 	
 	// Read y axis
 	temp = i2c_readAck();
-	temp = (temp<<8) | i2c_readNak();
-	value[2] = temp;
+	temp = (temp << 8) | i2c_readNak();
+	value[1] = temp;
 
 	i2c_stop();
 }
