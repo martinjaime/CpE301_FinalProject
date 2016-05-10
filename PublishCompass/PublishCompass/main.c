@@ -38,14 +38,6 @@ int main(void)
 	HMC5883L_init();
 
 	printf("Hello world!\n");
-// 	while(1)
-// 	{
-// 		_delay_ms(200); // Wait for compass to initiate
-// 		printf("AT\n");
-// 		scanf("%s", buffer);
-// 		printf("%s\r\n", buffer);
-// 	}
-	_delay_ms(3000);
     while (1)
     {
 		readCompass(values);
