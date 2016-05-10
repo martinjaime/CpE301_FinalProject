@@ -34,6 +34,12 @@ int USART0_sendChar(char data, FILE *stream)
 	return 0;
 }
 
+void USART0_sendStr(char *str)
+{
+	while(*str)
+		USART0_sendChar(*(str++), NULL); // Send a char and increment pointer.
+}
+
 void USART0_init (void)
 /*
  * Procedure to initialize USART0 asynchronous with enabled RX/TX, 8 bit data,

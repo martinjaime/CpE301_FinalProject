@@ -11,12 +11,14 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <math.h>
 
 #include "i2c.h"
 #include "HMC5883L.h"
 #include "uart.h"
+#include "ESP8266.h"
 
 double calcDirection(double, double);
 double map(double x, double in_min, double in_max, double out_min, double out_max);
@@ -28,7 +30,6 @@ int main(void)
 {
 	int16_t values[3];
 	double  direction;
-// 	char buffer[100];
 // 	uint32_t magnitude;
 	
 	stdin = stdout = &usart0_str;
@@ -36,15 +37,15 @@ int main(void)
 	USART0_init();
 	i2c_init();
 	HMC5883L_init();
+	
+	// Uncomment if this is the first time running, to initiate module
+	// with appropriate SSID and password. 
+	//ESP8266_init();
 
-	printf("Hello world!\n");
-// 	while(1)
-// 	{
-// 		_delay_ms(200); // Wait for compass to initiate
-// 		printf("AT\n");
-// 		scanf("%s", buffer);
-// 		printf("%s\r\n", buffer);
-// 	}
+	// Configure ESP8266
+	ESP8266_command("AT+CIPMUX=0\n", NULL);
+	
+
 	_delay_ms(3000);
     while (1)
     {
