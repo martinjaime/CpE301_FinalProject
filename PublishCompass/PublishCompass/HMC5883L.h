@@ -29,18 +29,16 @@
 
 void HMC5883L_init()
 {
-	char x = 0x00;
-	// Write 0x70 to HMC5883L register A
-	i2c_start(WRITE_ADDRESS);
-	//i2c_write(WRITE_ADDRESS);
-	//i2c_start_wait(WRITE_ADDRESS);
-	//i2c_write(CONF_A_REG);
-	i2c_write(x);
+	// Write 0x70 to HMC5883L register  A
+	//	"	 0x20 to	"		"		B
+	//	"	 0x00 to	"		"		Mode
+	i2c_start(HMC5883L_ADDR+I2C_WRITE);
+	i2c_write(CONF_A_REG);
 	i2c_write(0x70);	// avg 8 samples, 15Hz, Normal measurement
 	i2c_write(0x20);
 	i2c_write(0x00);
-	i2c_stop();
-	_delay_us(1000); 
+	i2c_stop();			// Release the bus. 
+	_delay_ms(1); 
 // 	
 // 	i2c_start(WRITE_ADDRESS);
 // 	i2c_write(0x70);	// avg 8 samples, 15Hz, Normal measurement
@@ -60,9 +58,9 @@ void HMC5883L_init()
 // 	i2c_stop();			// release bus
 }
 
-void readCompass(uint16_t *value) 
+void readCompass(int16_t *value) 
 {
-	uint16_t temp;
+	int16_t temp;
 	//i2c_start_wait(WRITE_ADDRESS);
 	i2c_start(WRITE_ADDRESS);
 	i2c_write(0x03);

@@ -11,9 +11,9 @@ uart.on("data", "\n",
         x, y, z, dir = data:match("(-*%d+)\t(-*%d+)\t(-*%d+)\t(-*%d+)")
         if (string.match(data, "quit")) then
             print("Quitting...")
-            uart.on("data")
+            uart.on("data") -- quit this listener
         elseif (x ~= nil and y ~= nil and z ~= nil and dir ~= nil) then
-            --print(x .. y .. z .. dir)
+            print(x .. " " .. " " .. y .. " " .. z .. " " .. dir)
             x = tonumber(x)
             y = tonumber(y)
             z = tonumber(z)
@@ -57,4 +57,4 @@ function postThingSpeak(level)
     connout:connect(80,'api.thingspeak.com')
 end
  
-tmr.alarm(1, 5000, 1, function() postThingSpeak(0) end)
+tmr.alarm(1, 16000, 1, function() postThingSpeak(0) end)

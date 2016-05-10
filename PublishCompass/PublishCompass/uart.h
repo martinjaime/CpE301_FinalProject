@@ -9,7 +9,9 @@
 #define  F_CPU 8000000UL
 #endif
 
-#define BAUDRATE	9600
+#ifndef BAUDRATE
+#define BAUDRATE	115200
+#endif
 #define ASYNCH_NORM_PRESCALER (F_CPU/16/BAUDRATE - 1)
 // 
 // int USART0_sendChar(char, FILE*);	// Send character on USART0
@@ -40,7 +42,19 @@ void USART0_init (void)
 {
 	UCSR0B = (1<<TXEN0)  | (1<<RXEN0);	// enable transmit/receive
 	UCSR0C = (1<<UCSZ01) | (1<<UCSZ00);	// asynchronous, 8N1
-	UBRR0L = ASYNCH_NORM_PRESCALER;		// To set 9600 baud rate with 8MHz clock
+	UBRR0 = ASYNCH_NORM_PRESCALER;		// To set 9600 baud rate with 8MHz clock
+}
+
+int USART0_ReceiveChar(FILE *stream)
+{
+	uint8_t u8Data;
+	// Wait for byte to be received
+	while(!(UCSR0A&(1<<RXC0))){};
+	u8Data=UDR0;
+	//echo input data
+	//USART0SendByte(u8Data,stream);
+	// Return received data
+	return u8Data;
 }
 
 // reset stream pointer
