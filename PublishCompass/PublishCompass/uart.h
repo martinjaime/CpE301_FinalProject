@@ -13,9 +13,6 @@
 #define BAUDRATE	115200
 #endif
 #define ASYNCH_NORM_PRESCALER (F_CPU/16/BAUDRATE - 1)
-// 
-// int USART0_sendChar(char, FILE*);	// Send character on USART0
-// void usart0_init (void);			// Initialize USART0
 
 int USART0_sendChar(char data, FILE *stream)
 /*
@@ -26,11 +23,11 @@ int USART0_sendChar(char data, FILE *stream)
 {
 	if(data == '\n')
 	{
-		while(! (UCSR0A & (1<<UDRE0)) );
-		UDR0 = '\r';
+		while(! (UCSR0A & (1<<UDRE0)) ); // Wait until data is ready to send
+		UDR0 = '\r'; // send return char.
 	}
-	while(! (UCSR0A & (1<<UDRE0)) );
-	UDR0 = data;
+	while(! (UCSR0A & (1<<UDRE0)) ); // Wait until data is ready to send. 
+	UDR0 = data; // send data char. 
 	return 0;
 }
 
@@ -51,12 +48,14 @@ int USART0_ReceiveChar(FILE *stream)
 	// Wait for byte to be received
 	while(!(UCSR0A&(1<<RXC0))){};
 	u8Data=UDR0;
-	//echo input data
+	// echo input data
 	//USART0SendByte(u8Data,stream);
-	// Return received data
-	return u8Data;
+    return u8Data; // Return received data
+
 }
 
 // reset stream pointer
+// Uncomment or place in main. Replace NULL argument with a
+// procedure to receive a character if expecting input such as USART0_ReceiveChar. 
 //FILE USART0_stream = FDEV_SETUP_STREAM(USART0_sendChar, NULL, _FDEV_SETUP_WRITE);
 #endif // UART0_H

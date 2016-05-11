@@ -30,8 +30,17 @@ power drawing up to 250 mA. This means the system can be powered by a small.
 
 ###COMPONENTS:
 
-Hardware:
-- Atmega328P
+####Hardware:
+**Atmega328P** is an 8-bit AVR microcontroller (MCU). For this project, it is used for
+data collection, and preparing it for output. It simply canfigures the HMC5883L
+and and outputs a formatted string that represents the read data over UART0 at a
+baudrate of 9600.  
+
+The MCU communicates with the HMC5883L over I2C. At start up, the MCU configures 
+the HMC5883L with the configuration explained in the following section. The MCU
+reads the x, y, and z registers of the HMC5883L, which are interpreted as
+magnetic field vectors on each axis. Then, the MCU calculates the direction on
+
 - HMC5883L
 - ESP8266
 - Jumper wires
@@ -54,10 +63,7 @@ Protocols:
 All layers:
 
 ![All layers of PCB](/Schematics/PCB.png)
-
-###IMPLEMENTATION:
-
-* Atmega328P connected over I2C to the compass
+###IMPLEMENTATION: * Atmega328P connected over I2C to the compass
 * Atmega328P connected over UART to the Wi-Fi module. 
 * The compass continuously refreshes the data stored on its registers. 
 * The MCU will read the data and pass it on to the Wi-Fi module.
